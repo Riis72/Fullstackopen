@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const Filter = (props) => {
   return(
@@ -37,6 +38,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchFilter, setFilter] = useState('')
+  const [notification, setNotification] = useState(null)
 
 
   const hook = () => {
@@ -67,7 +69,12 @@ const App = () => {
           .update(person.id, changedPerson)
             .then(returnedPerson => {
               setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+              setNotification(`Updated ${newName}`)
+            setTimeout(() => {
+            setNotification(null)
+          }, 5000)
             })
+        
       }
       
     }
@@ -76,6 +83,10 @@ const App = () => {
         .create(nameObject)
           .then(personAdd => {
             setPersons(persons.concat(personAdd))
+            setNotification(`Added ${personAdd.name}`)
+            setTimeout(() => {
+            setNotification(null)
+          }, 5000)
           })
       setNewName('')
       setNewNumber('')
@@ -91,6 +102,10 @@ const App = () => {
         .remove(id)
           .then(() => {
             setPersons(persons.filter(p => p.id !== id))
+            setNotification(`Deleted ${person.name}`)
+            setTimeout(() => {
+            setNotification(null)
+          }, 5000)
           
             
           })
@@ -127,6 +142,7 @@ const filteredUsers = persons.filter((person => person.name.toLowerCase().includ
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Filter handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />

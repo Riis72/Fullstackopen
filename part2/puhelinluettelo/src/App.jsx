@@ -48,7 +48,11 @@ const App = () => {
       .getAll()
       .then(allPersons => {
         setPersons(allPersons)
+
       })
+        .catch(err => {
+            console.log(err)
+        })
   }
 
   
@@ -84,6 +88,8 @@ const App = () => {
           }, 5000)
           
             })
+          setNewName('')
+          setNewNumber('')
           
       }
       
@@ -99,6 +105,15 @@ const App = () => {
             setTimeout(() => {
             setNotification(null)
           }, 5000)
+          })
+          .catch(error => {
+              console.log(error.response.data)
+              setMessageType('error')
+              setNotification(`Person validation failed ${error.response.data}`)
+              setTimeout(() => {
+                  setNotification(null)
+              }, 5000)
+
           })
       setNewName('')
       setNewNumber('')
@@ -148,11 +163,12 @@ const handleFilterChange = (event) => {
   event.preventDefault()
   console.log('filter', event.target.value)
   setFilter(event.target.value)
+
 }
 
-const filteredUsers = persons.filter((person => person.name.toLowerCase().includes(searchFilter.toLowerCase()))) 
+const filteredUsers = persons.filter((person => person.name.toLowerCase().includes(searchFilter.toLowerCase())))
 
-  return (
+    return (
     <div>
       <h2>Phonebook</h2>
       <Notification style={messageType} message={notification} />

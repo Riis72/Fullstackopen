@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const dummy = (blogs) => {
     return 1
 }
@@ -25,6 +27,40 @@ const favoriteBlog = (blogs) => {
 
 }
 
-module.exports = { dummy, totalLikes, favoriteBlog }
+const mostBlogs = (blogs) => {
+    let numbers = blogs.reduce((acc, child) => {
+        if (!acc[child.author]) {
+            acc[child.author] = 0;
+        }
+        acc[child.author]++;
+
+        return acc;
+
+    }, {});
+
+    let max = 0
+
+    Object.values(numbers).map(x => {
+        if (x > max) {
+            max = x
+
+        }
+    })
+
+    const mostBlog = {}
+    const mostBlogNumber = Object.values(numbers)[Object.values(numbers).indexOf(max)]
+    const mostBlogAuthor = Object.keys(numbers)[Object.values(numbers).indexOf(max)]
+    mostBlog.author = mostBlogAuthor
+    mostBlog.blogs = mostBlogNumber
+    console.log(mostBlog)
+    return mostBlog
+
+}
+
+
+
+
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs}
 
 

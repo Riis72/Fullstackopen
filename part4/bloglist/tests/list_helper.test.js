@@ -117,8 +117,8 @@ describe('most voted blog', () => {
     ]
 
     test('multiple blogs', () => {
-        const result = listHelper.favoriteBlog(blogs)
-        expect(result).toEqual({"author": "Robert C. Martin", "likes": 1000, "title": "TDD harms architecture"})
+        const result = listHelper.mostBlogs(blogs)
+        expect(result).toEqual({"author": "Robert C. Martin", "blogs": 3})
     })
 
 });

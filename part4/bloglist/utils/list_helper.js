@@ -1,20 +1,20 @@
 const _ = require('lodash')
-
 const dummy = (blogs) => {
     return 1
 }
-
 const totalLikes = (blogs) => {
-    return blogs.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.likes,
-        0,
-    )
-}
 
+    const reducer = (sum, item) => {
+        return sum + item.likes
+    }
+    return blogs.reduce(reducer, 0)
+
+}
 const favoriteBlog = (blogs) => {
     let maxVotes = 0
     let blog = {}
     blogs.map(x => {
+
         if (x.likes > maxVotes) {
             maxVotes = x.likes
             blog.title = x.title
@@ -22,45 +22,39 @@ const favoriteBlog = (blogs) => {
             blog.likes = x.likes
         }
 
+
     })
     return blog
 
 }
-
 const mostBlogs = (blogs) => {
-    let numbers = blogs.reduce((acc, child) => {
-        if (!acc[child.author]) {
-            acc[child.author] = 0;
-        }
-        acc[child.author]++;
-
-        return acc;
-
-    }, {});
-
-    let max = 0
-
-    Object.values(numbers).map(x => {
-        if (x > max) {
-            max = x
-
-        }
+    names = []
+    blogs.map(x => {
+        names.push(x.author)
     })
 
-    const mostBlog = {}
-    const mostBlogNumber = Object.values(numbers)[Object.values(numbers).indexOf(max)]
-    const mostBlogAuthor = Object.keys(numbers)[Object.values(numbers).indexOf(max)]
-    mostBlog.author = mostBlogAuthor
-    mostBlog.blogs = mostBlogNumber
+    most = _.countBy(names)
+    arr1 = Object.keys(most)
+    arr2 = Object.values(most)
+    let highest = 0
+    arr2.map(x => {
+        if(x > highest) {
+            highest = x
+        }
+    })
+    const index = arr2.indexOf(highest)
+    let mostBlog = {}
+    mostBlog.author = arr1[index]
+    mostBlog.blogs = arr2[index]
     console.log(mostBlog)
     return mostBlog
-
 }
 
 
 
-
-
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs}
-
-
+module.exports = {
+    dummy,
+    totalLikes,
+    favoriteBlog,
+    mostBlogs
+}

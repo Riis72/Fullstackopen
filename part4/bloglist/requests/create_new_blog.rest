@@ -1,9 +1,9 @@
-POST http://localhost:3003/api/blogs
+POST http://localhost:3003/api/blogs/6592e4bd3e39798647409280
 content-type: application/json
 
 {
-  "title": "test",
-  "author": "mä",
+  "title": "kyllä",
+  "author": "ei",
   "url": "ddd",
-  "likes": "12129"
+  "likes": 125
 }

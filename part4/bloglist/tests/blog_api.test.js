@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const api = supertest(app)
 
 
@@ -92,6 +93,7 @@ test('blog without title or url get status code 400', async () => {
     }
     await api
         .post('/api/blogs')
+        .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhdHR1IiwiaWQiOiI2NWFmZGVlNTBkOWQ3OWY2MWE5NGQ3NmUiLCJpYXQiOjE3MDYwMjQ2OTJ9.Mfz8yMB28vwFKLoTIgDJYd4ZPib_9kL80CZUL8CUoEM')
         .send(blog)
         .expect(400)
 })
@@ -119,9 +121,12 @@ test('blog likes can be updated', async () => {
 test('specific note can be deleted', async () => {
   let blogsAtStart = await Blog.find({})
   const blogToDelete = blogsAtStart[0]
+  console.log(blogToDelete)
 
   await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhdHR1IiwiaWQiOiI2NWFmZGVlNTBkOWQ3OWY2MWE5NGQ3NmUiLCJpYXQiOjE3MDYwMjQ2OTJ9.Mfz8yMB28vwFKLoTIgDJYd4ZPib_9kL80CZUL8CUoEM')
+
       .expect(204)
 
     const blogs = await Blog.find({})
@@ -144,6 +149,8 @@ test('blog can be added', async () => {
     }
     await api
         .post('/api/blogs')
+        .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhdHR1IiwiaWQiOiI2NWFmZGVlNTBkOWQ3OWY2MWE5NGQ3NmUiLCJpYXQiOjE3MDYwMjQ2OTJ9.Mfz8yMB28vwFKLoTIgDJYd4ZPib_9kL80CZUL8CUoEM')
+
         .send(blog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -153,6 +160,56 @@ test('blog can be added', async () => {
     expect(finalBlogs).toHaveLength(initialBlogs.length + 1)
 
 
+})
+
+test('invalid user can not be added', async () => {
+    const user = {
+        name: "Pertti",
+        password: "salainen"
+
+    }
+    await api
+        .post('/api/users')
+        .send(user)
+        .expect(400)
+        .expect('"Username or password missing"')
+})
+test('short username cannot be added', async () => {
+    const user = {
+        username: "Mo",
+        name: "Pertti",
+        password: "salainen"
+
+    }
+    await api
+        .post('/api/users')
+        .send(user)
+        .expect(400)
+        .expect('"Username too short"')
+})
+test('user needs to be unique', async () => {
+    await User.deleteMany({})
+    const user = {
+        username: "testi",
+        name: "Lauri",
+        password: "salainen"
+
+    }
+    await api
+        .post('/api/users')
+        .send(user)
+        .expect(201)
+
+    const newUser = {
+        username: "testi",
+        name: "Lauri",
+        password: "salainen"
+
+    }
+    await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(500)
 })
 
 
